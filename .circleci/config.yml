@@ -1,0 +1,41 @@
+version: 2.1
+
+jobs:
+  cookies:
+    docker:
+      - image: cimg/base:stable
+    resource_class: small
+    steps:
+      - run: echo "TODO log in to site"
+      - run: echo "TODO save cookie to workspace"
+  todos:
+    docker:
+      - image: cimg/base:stable
+    resource_class: small
+    environment:
+      TZ: Asia/Tokyo
+    steps:
+      - run: echo "TODO pull Google Sheet and look up next reservations"
+      - run: echo "TODO save lists as csv to workspace"
+  reserve:
+    docker:
+      - image: cimg/base:stable
+    resource_class: medium
+    environment:
+      TZ: Asia/Tokyo
+    steps:
+      - checkout
+      - run: echo "TODO attach workspace"
+      - run: echo "TODO parse csv to commands needed"
+      - run: echo "TODO run commands to reserve with `at` in background"
+      - run: echo "TODO sleep with no_output_timeout 1h"
+
+workflows:
+  reservation:
+    jobs:
+      - cookies
+      - todos
+      - reserve:
+          requires:
+            - todos
+            - cookies
